@@ -107,6 +107,19 @@ public class PessoaREST {
 		return Response.status(201).header("Location", url).entity(id).build();
 	}
 
+	public static class PessoaPatchBody {
+
+		@Size(min = 3, max = 50)
+		public String nome;
+
+		@Email
+		@Size(max = 255)
+		public String email;
+
+		@Size(max = 15)
+		public String telefone;
+	}
+
 	public static class PessoaBody {
 
 		@NotEmpty
@@ -115,19 +128,6 @@ public class PessoaREST {
 
 		@Email
 		@NotEmpty
-		@Size(max = 255)
-		public String email;
-
-		@Size(max = 15)
-		public String telefone;
-	}
-
-	public static class PessoaPatchBody {
-
-		@Size(min = 3, max = 50)
-		public String nome;
-
-		@Email
 		@Size(max = 255)
 		public String email;
 
