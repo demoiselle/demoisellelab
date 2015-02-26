@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import lab.entity.Pessoa;
@@ -32,6 +33,25 @@ public class PessoaREST {
 		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
 
 		for (Pessoa pessoa : PessoaDAO.getInstance().find()) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
+
+	@GET
+	@Path("temp2")
+	@Produces("application/json")
+	public List<PessoaListBody> buscar2(@QueryParam("filtro") String filtro) {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+
+		for (Pessoa pessoa : PessoaDAO.getInstance().find2(filtro)) {
 			PessoaListBody body = new PessoaListBody();
 			body.id = pessoa.getId();
 			body.nome = pessoa.getNome();
@@ -128,6 +148,17 @@ public class PessoaREST {
 		return Response.status(201).header("Location", url).entity(id).build();
 	}
 
+	public static class PessoaListBody {
+
+		public Integer id;
+
+		public String nome;
+
+		public String email;
+
+		public String telefone;
+	}
+
 	public static class PessoaPatchBody {
 
 		@Size(min = 3, max = 50)
@@ -138,17 +169,6 @@ public class PessoaREST {
 		public String email;
 
 		@Size(max = 15)
-		public String telefone;
-	}
-
-	public static class PessoaListBody {
-
-		public Integer id;
-
-		public String nome;
-
-		public String email;
-
 		public String telefone;
 	}
 
