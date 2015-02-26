@@ -4,6 +4,7 @@ import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,6 +42,53 @@ public class PessoaREST {
 		return body;
 	}
 
+	@PUT
+	@Path("{id}")
+	@Transactional
+	@ValidatePayload
+	@Consumes("application/json")
+	public void update(@PathParam("id") Integer id, PessoaBody body) throws Exception {
+		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
+		Pessoa pessoa = pessoaDAO.load(id);
+
+		if (pessoa == null) {
+			throw new NotFoundException();
+		}
+
+		pessoa.setNome(body.nome);
+		pessoa.setEmail(body.email);
+		pessoa.setTelefone(body.telefone);
+		pessoaDAO.update(pessoa);
+	}
+
+	@PATCH
+	@Path("{id}")
+	@Transactional
+	@ValidatePayload
+	@Consumes("application/json")
+	public void patch(@PathParam("id") Integer id, PessoaPatchBody body) throws Exception {
+		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
+		Pessoa pessoa = pessoaDAO.load(id);
+
+		if (pessoa == null) {
+			throw new NotFoundException();
+		}
+
+		if (body.nome != null) {
+			pessoa.setNome(body.nome);
+		}
+
+		if (body.email != null) {
+			pessoa.setEmail(body.email);
+		}
+
+		if (body.telefone != null) {
+			pessoa.setTelefone(body.telefone);
+		}
+
+		pessoaDAO.update(pessoa);
+	}
+
 	@POST
 	@Transactional
 	@ValidatePayload
@@ -70,7 +118,18 @@ public class PessoaREST {
 		@Size(max = 255)
 		public String email;
 
-		public String nascimento;
+		@Size(max = 15)
+		public String telefone;
+	}
+
+	public static class PessoaPatchBody {
+
+		@Size(min = 3, max = 50)
+		public String nome;
+
+		@Email
+		@Size(max = 255)
+		public String email;
 
 		@Size(max = 15)
 		public String telefone;
