@@ -1,5 +1,8 @@
 package lab.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,6 +25,24 @@ import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
 @Path("pessoa")
 public class PessoaREST {
+
+	@GET
+	@Produces("application/json")
+	public List<PessoaListBody> buscar() {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+
+		for (Pessoa pessoa : PessoaDAO.getInstance().find()) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
 
 	@GET
 	@Path("{id}")
@@ -47,7 +68,7 @@ public class PessoaREST {
 	@Transactional
 	@ValidatePayload
 	@Consumes("application/json")
-	public void update(@PathParam("id") Integer id, PessoaBody body) throws Exception {
+	public void atualizar(@PathParam("id") Integer id, PessoaBody body) throws Exception {
 		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
 		Pessoa pessoa = pessoaDAO.load(id);
 
@@ -66,7 +87,7 @@ public class PessoaREST {
 	@Transactional
 	@ValidatePayload
 	@Consumes("application/json")
-	public void patch(@PathParam("id") Integer id, PessoaPatchBody body) throws Exception {
+	public void atualizarParcial(@PathParam("id") Integer id, PessoaPatchBody body) throws Exception {
 		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
 		Pessoa pessoa = pessoaDAO.load(id);
 
@@ -117,6 +138,17 @@ public class PessoaREST {
 		public String email;
 
 		@Size(max = 15)
+		public String telefone;
+	}
+
+	public static class PessoaListBody {
+
+		public Integer id;
+
+		public String nome;
+
+		public String email;
+
 		public String telefone;
 	}
 
