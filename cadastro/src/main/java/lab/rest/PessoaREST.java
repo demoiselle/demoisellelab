@@ -20,6 +20,7 @@ import lab.persistence.PessoaDAO;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
@@ -52,6 +53,33 @@ public class PessoaREST {
 		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
 
 		for (Pessoa pessoa : PessoaDAO.getInstance().find2(filtro)) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
+
+	@GET
+	@Path("temp3")
+	@Produces("application/json")
+	public List<PessoaListBody> buscar3(@QueryParam("filtro") String filtro, @QueryParam("ordem") String ordem)
+			throws BadRequestException {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+		List<Pessoa> pessoas;
+
+		try {
+			pessoas = PessoaDAO.getInstance().find3(filtro, ordem);
+		} catch (IllegalArgumentException cause) {
+			throw new BadRequestException();
+		}
+
+		for (Pessoa pessoa : pessoas) {
 			PessoaListBody body = new PessoaListBody();
 			body.id = pessoa.getId();
 			body.nome = pessoa.getNome();

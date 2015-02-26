@@ -32,7 +32,7 @@ public class Loader {
 		pessoa = new Pessoa();
 		pessoa.setNome("Luciano Borges");
 		pessoa.setEmail("luciano.borges@serpro.gov.br");
-		pessoa.setTelefone("(71) 7777-8888");
+		pessoa.setTelefone("(71) 0000-9999");
 		pessoaDAO.insert(pessoa);
 	}
 }
