@@ -2,14 +2,10 @@ package lab.entity;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
@@ -29,9 +25,6 @@ public class Pessoa {
 	@NotNull
 	@Column(length = 255)
 	private String email;
-
-	@Temporal(TemporalType.DATE)
-	private Date nascimento;
 
 	@Column(length = 15)
 	private String telefone;
@@ -88,14 +81,6 @@ public class Pessoa {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public Date getNascimento() {
-		return nascimento;
-	}
-
-	public void setNascimento(Date nascimento) {
-		this.nascimento = nascimento;
 	}
 
 	public String getTelefone() {

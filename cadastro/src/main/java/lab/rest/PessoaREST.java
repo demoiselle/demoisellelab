@@ -1,12 +1,17 @@
 package lab.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import lab.entity.Pessoa;
@@ -15,12 +20,77 @@ import lab.persistence.PessoaDAO;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
 @Path("pessoa")
 public class PessoaREST {
+
+	@GET
+	@Produces("application/json")
+	public List<PessoaListBody> buscar() {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+
+		for (Pessoa pessoa : PessoaDAO.getInstance().find()) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
+
+	@GET
+	@Path("temp2")
+	@Produces("application/json")
+	public List<PessoaListBody> buscar2(@QueryParam("filtro") String filtro) {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+
+		for (Pessoa pessoa : PessoaDAO.getInstance().find2(filtro)) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
+
+	@GET
+	@Path("temp3")
+	@Produces("application/json")
+	public List<PessoaListBody> buscar3(@QueryParam("filtro") String filtro, @QueryParam("ordem") String ordem)
+			throws BadRequestException {
+		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
+		List<Pessoa> pessoas;
+
+		try {
+			pessoas = PessoaDAO.getInstance().find3(filtro, ordem);
+		} catch (IllegalArgumentException cause) {
+			throw new BadRequestException();
+		}
+
+		for (Pessoa pessoa : pessoas) {
+			PessoaListBody body = new PessoaListBody();
+			body.id = pessoa.getId();
+			body.nome = pessoa.getNome();
+			body.email = pessoa.getEmail();
+			body.telefone = pessoa.getTelefone();
+
+			result.add(body);
+		}
+
+		return result.isEmpty() ? null : result;
+	}
 
 	@GET
 	@Path("{id}")
@@ -41,6 +111,53 @@ public class PessoaREST {
 		return body;
 	}
 
+	@PUT
+	@Path("{id}")
+	@Transactional
+	@ValidatePayload
+	@Consumes("application/json")
+	public void atualizar(@PathParam("id") Integer id, PessoaBody body) throws Exception {
+		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
+		Pessoa pessoa = pessoaDAO.load(id);
+
+		if (pessoa == null) {
+			throw new NotFoundException();
+		}
+
+		pessoa.setNome(body.nome);
+		pessoa.setEmail(body.email);
+		pessoa.setTelefone(body.telefone);
+		pessoaDAO.update(pessoa);
+	}
+
+	@PATCH
+	@Path("{id}")
+	@Transactional
+	@ValidatePayload
+	@Consumes("application/json")
+	public void atualizarParcial(@PathParam("id") Integer id, PessoaPatchBody body) throws Exception {
+		PessoaDAO pessoaDAO = PessoaDAO.getInstance();
+		Pessoa pessoa = pessoaDAO.load(id);
+
+		if (pessoa == null) {
+			throw new NotFoundException();
+		}
+
+		if (body.nome != null) {
+			pessoa.setNome(body.nome);
+		}
+
+		if (body.email != null) {
+			pessoa.setEmail(body.email);
+		}
+
+		if (body.telefone != null) {
+			pessoa.setTelefone(body.telefone);
+		}
+
+		pessoaDAO.update(pessoa);
+	}
+
 	@POST
 	@Transactional
 	@ValidatePayload
@@ -59,6 +176,30 @@ public class PessoaREST {
 		return Response.status(201).header("Location", url).entity(id).build();
 	}
 
+	public static class PessoaListBody {
+
+		public Integer id;
+
+		public String nome;
+
+		public String email;
+
+		public String telefone;
+	}
+
+	public static class PessoaPatchBody {
+
+		@Size(min = 3, max = 50)
+		public String nome;
+
+		@Email
+		@Size(max = 255)
+		public String email;
+
+		@Size(max = 15)
+		public String telefone;
+	}
+
 	public static class PessoaBody {
 
 		@NotEmpty
@@ -69,8 +210,6 @@ public class PessoaREST {
 		@NotEmpty
 		@Size(max = 255)
 		public String email;
-
-		public String nascimento;
 
 		@Size(max = 15)
 		public String telefone;
