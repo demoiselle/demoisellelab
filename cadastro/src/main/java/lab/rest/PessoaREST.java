@@ -69,7 +69,7 @@ public class PessoaREST {
 	@Path("temp3")
 	@Produces("application/json")
 	public List<PessoaListBody> buscar3(@QueryParam("filtro") String filtro, @QueryParam("ordem") String ordem)
-			throws BadRequestException {
+			throws Exception {
 		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
 		List<Pessoa> pessoas;
 
