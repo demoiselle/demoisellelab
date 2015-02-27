@@ -25,7 +25,7 @@ import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
-@Path("pessoa")
+@Path("pessoas")
 public class PessoaREST {
 
 	@GET
