@@ -20,8 +20,10 @@ $(function(){
 	
 });
 
-function insertOk(data) {
-	$("#global-message").addClass("alert-success").text("Pessoa criado com sucesso.").show();
+function insertOk(data, textStatus, jqXHR) {
+	console.log("Status: " + jqXHR.status);
+	console.log("Location: " + jqXHR.getResponseHeader('Location'));
+	$("#global-message").addClass("alert-success").text("Pessoa com id = " + data + " criado com sucesso.").show();
 }
 
 function insertFail(request) {
@@ -55,3 +57,15 @@ function insertFail(request) {
 			break;
 	}
 }
+
+/*
+	if (id = App.getUrlParameterByName('id')) {
+		BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
+	}
+	
+	getUrlParameterByName : function(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+ */

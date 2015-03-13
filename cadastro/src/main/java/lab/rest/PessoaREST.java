@@ -172,7 +172,7 @@ public class PessoaREST {
 		PessoaDAO.getInstance().insert(entity);
 
 		Integer id = entity.getId();
-		String url = "http://localhost:8080/cadastro/api/pessoa/" + id;
+		String url = "http://localhost:8080/cadastro/api/pessoas/" + id;
 		return Response.status(201).header("Location", url).entity(id).build();
 	}
 
