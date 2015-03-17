@@ -1,5 +1,12 @@
 $(function(){
 	
+	var id = getUrlParameterByName('id');
+	$("#id").val(id)
+	
+	if (id) {
+		PessoaProxy.obter(id).done(loadOk).fail(loadFailed);
+	}
+	
 	$("form").submit(function(event){
 		/* Limpa as mensagens de erro */
 		$("#global-message").removeClass("alert-danger alert-success").empty().hide();
@@ -19,6 +26,29 @@ $(function(){
 	});
 	
 });
+
+function getUrlParameterByName(name){
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function loadOk(data) {
+	$("#nome").val(data.nome);
+	$("#email").val(data.email);
+	$("#telefone").val(data.telefone);
+}
+
+function loadFailed(request) {
+	switch (request.status) {
+		case 404:
+			alert("Você está tentando acessar um registro inexistente!");
+			break;
+
+		default:
+			break;
+	}
+}
 
 function insertOk(data, textStatus, jqXHR) {
 	console.log("Status: " + jqXHR.status);
@@ -57,15 +87,3 @@ function insertFail(request) {
 			break;
 	}
 }
-
-/*
-	if (id = App.getUrlParameterByName('id')) {
-		BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
-	}
-	
-	getUrlParameterByName : function(name) {
-		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
-		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-	}
- */

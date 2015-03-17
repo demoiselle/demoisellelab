@@ -9,5 +9,12 @@ var PessoaProxy = {
 			data : JSON.stringify(pessoa),
 			contentType : "application/json"
 		});
+	},
+	
+	obter : function(id){
+		return $.ajax({
+			type : "GET",
+			url : this.url + "/" + id
+		});
 	}
 };
