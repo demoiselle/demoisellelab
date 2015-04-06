@@ -2,13 +2,22 @@ var PessoaProxy = {
 
 	url : "api/pessoas",
 
-	insert : function(pessoa) {
+	inserir : function(pessoa) {
 		return $.ajax({
 			type : "POST",
 			url : this.url,
 			data : JSON.stringify(pessoa),
 			contentType : "application/json"
 		});
+	},
+	
+	atualizar : function(id, pessoa){
+		return $.ajax({
+			type : "PUT",
+			url : this.url + "/" + id,
+			data : JSON.stringify(pessoa),
+			contentType : "application/json"
+		});		
 	},
 	
 	obter : function(id){
