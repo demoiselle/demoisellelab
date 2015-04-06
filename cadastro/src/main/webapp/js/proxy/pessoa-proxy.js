@@ -20,6 +20,15 @@ var PessoaProxy = {
 		});		
 	},
 	
+	atualizarParcial : function(id, pessoaPatch){
+		return $.ajax({
+			type : "PATCH",
+			url : this.url + "/" + id,
+			data : JSON.stringify(pessoaPatch),
+			contentType : "application/json"
+		});		
+	},
+	
 	obter : function(id){
 		return $.ajax({
 			type : "GET",

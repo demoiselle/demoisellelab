@@ -7,9 +7,37 @@ $(function(){
 		PessoaProxy.obter(id).done(obterOk).fail(obterFalhou);
 	}
 	
+	$("#nome, #email, #telefone").on('change', function(){
+		$(this).parent().removeClass("has-error has-success");
+		$(".text-danger").parent().removeClass("has-error");
+		$(".text-danger").hide();
+		var campo = this; 
+		if(id){
+			switch(campo.id){
+				case "nome": 
+					var pessoaPatch = { nome : campo.value };
+					break;
+				case "email":
+					var pessoaPatch = { email : campo.value };
+					break;
+				case "telefone":
+					var pessoaPatch = { telefone : campo.value };
+					break;
+			}
+			PessoaProxy.atualizarParcial(id, pessoaPatch).done(function(){ atualizarParcialOk(campo.id) }).fail(atualizarFalhou);
+		}
+	});
+	
+	$("#nome, #email, #telefone").on('blur', function(){
+		if($(this).parent().hasClass("has-error")){
+			$(this).focus();
+		}
+	});
+	
 	$("form").submit(function(event){
 		/* Limpa as mensagens de erro */
 		$("#global-message").removeClass("alert-danger alert-success").empty().hide();
+		$(".control-label").parent().removeClass("has-success");
 		$(".text-danger").parent().removeClass("has-error");
 		$(".text-danger").hide();
 		
@@ -30,6 +58,10 @@ $(function(){
 	});
 	
 });
+
+function atualizarParcialOk(id){
+	$("#" + id ).parent().addClass("has-success", {duration : 3000});
+}
 
 function obterParametroDaUrlPorNome(name){
 	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -77,7 +109,6 @@ function atualizarFalhou(request) {
 				});
 
 				if (message) {
-					console.log($("#" + id ).parent());
 					$("#" + id ).parent().addClass("has-error");
 					$("#" + id + "-message").html(message).show();
 					$(this).focus();
