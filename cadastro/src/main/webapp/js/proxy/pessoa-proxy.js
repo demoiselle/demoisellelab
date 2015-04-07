@@ -34,5 +34,13 @@ var PessoaProxy = {
 			type : "GET",
 			url : this.url + "/" + id
 		});
+	},
+	
+	buscar : function(filtro, ordem){
+		return $.ajax({
+			type : "GET",
+			url : this.url,
+			data : {"filtro" : filtro, "ordem" : ordem}
+		});
 	}
 };

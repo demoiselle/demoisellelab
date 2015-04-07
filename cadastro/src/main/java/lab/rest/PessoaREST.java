@@ -29,8 +29,9 @@ import br.gov.frameworkdemoiselle.util.ValidatePayload;
 public class PessoaREST {
 
 	@GET
+	@Path("temp1")
 	@Produces("application/json")
-	public List<PessoaListBody> buscar() {
+	public List<PessoaListBody> buscar1() {
 		List<PessoaListBody> result = new ArrayList<PessoaListBody>();
 
 		for (Pessoa pessoa : PessoaDAO.getInstance().find()) {
@@ -66,7 +67,7 @@ public class PessoaREST {
 	}
 
 	@GET
-	@Path("temp3")
+//	@Path("temp3")
 	@Produces("application/json")
 	public List<PessoaListBody> buscar3(@QueryParam("filtro") String filtro, @QueryParam("ordem") String ordem)
 			throws Exception {
