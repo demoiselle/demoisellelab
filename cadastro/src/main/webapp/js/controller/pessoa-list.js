@@ -19,8 +19,11 @@ function buscarOk(pessoas) {
 	var table = document.getElementsByTagName("table")[0];
 
 	var body = document.getElementsByTagName("tbody")[0];
+	
+	var foot = document.getElementsByTagName("tfoot")[0];
 
 	$(body).empty();
+	$(foot).empty();
 
 	if (pessoas) {
 		for (var i = 0; i < pessoas.length; i++) {
@@ -51,7 +54,9 @@ function buscarOk(pessoas) {
 			body.appendChild(row);
 		}
 	} else {
-		var foot = document.createElement('tfoot');
+		if (!foot) {
+	        foot = document.createElement('tfoot');
+	    }
 		var emptyRow = document.createElement('tr');
 		var emptyCell = document.createElement('td');
 		var noRegisterText = document.createTextNode("Nenhum registro retornado");
